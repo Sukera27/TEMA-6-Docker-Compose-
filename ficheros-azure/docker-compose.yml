@@ -1,0 +1,22 @@
+# Las imágenes se descargan de Azure Container Registry.
+# REGISTRY, DB_USERNAME y DB_PASSWORD se leen del fichero .env (misma carpeta).
+services:
+
+  backend:
+    image: ${REGISTRY}/pokeapi-back:1.0
+    container_name: pokeapi-back
+    restart: unless-stopped
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+  frontend:
+    image: ${REGISTRY}/pokeapi-front:1.0
+    container_name: pokeapi-front
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      API_URL: http://backend:8085/api/v1
+    ports:
+      - "80:4321"
